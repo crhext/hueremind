@@ -52,34 +52,41 @@ def main():
                 now = datetime.datetime.utcnow()
                 then = now + datetime.timedelta(minutes=2)
                 
+                # Get first event occuring in next 2 min
                 print('Getting events in the next 2 mins')
                 events_result = service.events().list(calendarId='primary', timeMin=now.isoformat() + 'Z', timeMax=then.isoformat() + 'Z',
                                                     maxResults=1, singleEvents=True,
                                                     orderBy='startTime').execute()
                 events = events_result.get('items', [])
-
+                
+                # if no event exists, turn light off
                 if not events:
                     print('No upcoming events found.')
                     
                     b.set_light(1, 'on', False)
-                    
+                 
+                #if event exists, get the start date/time of the event 
                 for event in events:
                     start = event['start'].get('dateTime', event['start'].get('date'))
                     print(start, event['summary'])
                     
+                    #compare start time vs current time. First parsing into format that python will let us compare
                     if start:
                         event_start = parser.parse(start)
                         current_time = pytz.utc.localize(datetime.datetime.utcnow())
                         
+                        #if event is upcoming, set light orange
                         if current_time < event_start:
                             b.set_light(1, 'on', True)
-                            b.set_light(1, 'xy', [1.0, 0.0])
+                            b.set_light(1, 'xy', [0.6142, 0.3785])
                             b.set_light(1, 'bri', 127)
+                        
+                        #if event is upcoming, set light red
                         else:
                             b.set_light(1, 'on', True)
-                            b.set_light(1, 'xy', [0.1, 0.5])
+                            b.set_light(1, 'xy', [0.6915, 0.3083])
                         
-
+                #call api every 5 seconds
                 time.sleep(5)
 
 if __name__ == '__main__':
