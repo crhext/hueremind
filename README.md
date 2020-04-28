@@ -1,5 +1,5 @@
 # hueremind
-python script to use hue bulb as a calendar reminder. Hue bulb will be turn red in the 2 mins upcoming to an event. Hue bulb will turn green throughout the event.
+python script to use hue bulb as a calendar reminder. Hue bulb will be turn orange in the 2 mins upcoming to an event. Hue bulb will turn red throughout the event(s).
 
 Step 1:
 
